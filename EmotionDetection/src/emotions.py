@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import cv2
 import time
 from datetime import datetime
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D
@@ -98,13 +99,15 @@ if mode == "train":
             validation_data=validation_generator,
             validation_steps=num_val // batch_size)
     plot_model_history(model_info)
+    
     model.save_weights('model.h5')
 
 
 # emotions will be displayed on your face from the webcam feed
 elif mode == "display":
     model.load_weights('model.h5')
-
+    tf.saved_model.save(model,"Modelocompleto")
+    
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
 
