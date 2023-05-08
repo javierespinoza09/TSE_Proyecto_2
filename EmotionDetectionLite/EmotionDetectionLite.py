@@ -1,14 +1,14 @@
 import cv2
 import numpy as np
 import time
-import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter
 from datetime import datetime
 import paramiko
 import getpass
 import os
 
 # load the TFLite model
-interpreter = tf.lite.Interpreter(model_path="model.tflite")
+interpreter = Interpreter(model_path="model.tflite")
 interpreter.allocate_tensors()
 
 # Get input and output details
@@ -81,17 +81,17 @@ while True:
             f.write(f"{datetime.now()},   {emotion_dict[maxindex]}\n")
             
 
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect('20.14.138.43', username='lacordero', password="C*Mlu/001*Ant")
-        rutas=["registros.txt",f"{int(tiempo_actualreal)}.jpg"]
-        for ruta in rutas:
-            path_local = os.path.basename(ruta)
-            sftp = ssh.open_sftp()
-            path_remoto = 'Desktop/'+ruta
-            sftp.put(path_local, path_remoto)
-        sftp.close()
-        ssh.close()
+        #ssh = paramiko.SSHClient()
+        #ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #ssh.connect('20.14.138.43', username='lacordero', password="C*Mlu/001*Ant")
+        #rutas=["registros.txt",f"{int(tiempo_actualreal)}.jpg"]
+        #for ruta in rutas:
+        #    path_local = os.path.basename(ruta)
+        #    sftp = ssh.open_sftp()
+        #    path_remoto = 'Desktop/'+ruta
+        #    sftp.put(path_local, path_remoto)
+        #sftp.close()
+        #ssh.close()
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
