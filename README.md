@@ -1,6 +1,6 @@
 # TSE_Proyecto_2
 
-#Pasos para flashear la imagen a la tarjeta SD
+# Pasos para flashear la imagen a la tarjeta SD
 1) Listar los discos para saber cual es la SD, esto con el comando:
       lsblk
       
