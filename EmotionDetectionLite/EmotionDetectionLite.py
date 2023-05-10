@@ -3,9 +3,10 @@ import numpy as np
 import time
 from tflite_runtime.interpreter import Interpreter
 from datetime import datetime
+import os
+import picamera
 import paramiko
 import getpass
-import os
 
 # load the TFLite model
 interpreter = Interpreter(model_path="model.tflite")
@@ -22,18 +23,33 @@ output_index = output_details[0]['index']
 # dictionary which assigns each label an emotion (alphabetical order)
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
-# start the webcam feed
-cap = cv2.VideoCapture(0)
+# start the camera
+def initialize_picamera():
+    try:
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.framerate = 30
+        return camera
+    except:
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.framerate = 30
+        return camera
+
+initialize_picamera()
+
+# create a numpy array for the image
+frame = np.empty((camera.resolution[1], camera.resolution[0], 3), dtype=np.uint8)
 
 # Variables de tiempo
 tiempo_inicio = time.time()
-tiempo_inicio2=tiempo_inicio
+tiempo_inicio2 = tiempo_inicio
 
 while True:
+    # capture an image from the camera
+    camera.capture(frame, format='rgb', use_video_port=True)
+
     # Find haar cascade to draw bounding box around face
-    ret, frame = cap.read()
-    if not ret:
-        break
     facecasc = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = facecasc.detectMultiScale(gray,scaleFactor=1.3, minNeighbors=5)
@@ -55,7 +71,6 @@ while True:
             cropped_img = cropped_img / 255.0
             cropped_img = np.expand_dims(np.expand_dims(cropped_img, -1), 0)
             interpreter.set_tensor(input_index, cropped_img)
-
             # run inference with TFLite interpreter
             interpreter.set_tensor(interpreter.get_input_details()[0]["index"], cropped_img)
             interpreter.invoke()
@@ -64,11 +79,9 @@ while True:
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
         cv2.imwrite(nombre_archivo, frame)
-
         ##Función para guardar un .txt con el tiempo y la emoción para esa foto
-
         try:
-            with open("tiempo.txt", "r") as f:
+            with open("tiempo.txt", "r") as f
                 tiempo_anterior, expresion_anterior = f.read().strip().split(",")
         except FileNotFoundError:
             # Si el archivo no existe, el tiempo y fruta anteriores son cero y vacío, respectivamente
