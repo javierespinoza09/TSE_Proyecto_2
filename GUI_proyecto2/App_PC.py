@@ -317,21 +317,21 @@ class SSHApplication:
 
         
         # Local folder path input#### Quitar...  Debe ser fijo
-        locallabel=tk.Label(nueva_ventana, text="Local Folder Path:").grid(row=1, column=0, sticky="e")
-        localfolder=tk.Entry(nueva_ventana, textvariable=local_folder_path_g).grid(row=5, column=1)
+        locallabel=tk.Label(nueva_ventana, text="Local Folder Path:").grid(row=1, column=2, sticky="e")
+        localfolder=tk.Entry(nueva_ventana, textvariable=local_folder_path_g).grid(row=1, column=3)
 
         # Execute button
-        ejecutar=tk.Button(nueva_ventana, text="Execute Command", command=execute).grid(row=2, columnspan=2)
+        ejecutar=tk.Button(nueva_ventana, text="Execute Command", command=execute).grid(row=0, columnspan=2)
         
         # Extract folder button
-        extraer=tk.Button(nueva_ventana, text="Extract Folder", command=extract_folder).grid(row=3, columnspan=2)
+        extraer=tk.Button(nueva_ventana, text="Extract Folder", command=extract_folder).grid(row=1, column=4, padx=5)
                
         # Botón para finalizar el programa
-        fin=tk.Button(nueva_ventana, text="Finalizar Programa", command=end_program).grid(row=4, columnspan=2)
+        fin=tk.Button(nueva_ventana, text="Finalizar Programa", command=end_program).grid(row=1,columnspan=2)
     
         
 
-        graph = tk.Button(nueva_ventana, text="Graficar datos", command=self.call_plot).grid(row=2, column=2, padx=5)
+        graph = tk.Button(nueva_ventana, text="Graficar datos", command=self.call_plot).grid(row=4, column=0, padx=5)
         # Set Framerate button
         setframe=tk.Button(nueva_ventana, text="Set Framerate", command=set_framerate).grid(row=0, column=4, padx=5)
        
