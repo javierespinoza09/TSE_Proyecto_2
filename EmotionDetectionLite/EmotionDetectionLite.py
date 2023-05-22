@@ -37,7 +37,7 @@ while True:
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
         # Ajustar brillo y contraste
-        adjusted_frame = adjust_brightness_contrast(frame, brightness=75, contrast=4)
+        adjusted_frame = frame
         if not ret:
             break
         facecasc = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -71,15 +71,15 @@ while True:
             #cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
             
             # Comprueba si la carpeta ya existe
-            imagenes = 'resultados'
+            imagenes = 'peliculas'
             if not os.path.exists(imagenes):
             # Crea la carpeta
                 os.mkdir(imagenes)
                 
-                print("Se ha creado la carpeta de imágenes.")
+                print("Se ha creado la carpeta de peliculas.")
             else:
     
-                print("La carpeta de imágenes ya existe.")
+                print("La carpeta de peliculas ya existe.")
                 ##Función para guardar un .txt con el tiempo y la emoción para esa foto
             image_path = os.path.join(imagenes, nombre_archivo)   
             cv2.imwrite(image_path, adjusted_frame)
@@ -96,8 +96,8 @@ while True:
 
             print(datetime.now())
             # Guardar el tiempo y fruta en el archivo
-            with open("resultados/registros.txt", "a") as f:
-                f.write(f"{datetime.now()} {emotion_dict[maxindex]}\n")
+            with open("peliculas/registros.txt", "a") as f:
+                f.write(f"{datetime.now()},{emotion_dict[maxindex]}\n")
 
     except KeyboardInterrupt:
         break
