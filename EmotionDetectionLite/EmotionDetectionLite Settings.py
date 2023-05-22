@@ -33,7 +33,26 @@ tiempo_inicio = time.time()
 tiempo_inicio2=tiempo_inicio
 
 while True:
+    settings_path = "Desktop/settings.txt"
     try:
+        with open(settings_path, "r") as file:
+            file_contents = file.readlines()
+
+            if len(file_contents) >= 2:
+                # Extract the "Off" string
+                keyword_onoff = "On/Off: "
+                keyword_frame = "Framerate: "
+                off_string = file_contents[1].strip().split(keyword_onoff)[1]
+                framerate_int=int(file_contents[1].strip().split(keyword_frame)[1])
+            else:
+                print("Invalid file format: Insufficient lines in the file.")
+    except FileNotFoundError:
+        print("File not found.")
+    
+    if off_string=="Off":
+        break
+    
+    else:
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
         # Ajustar brillo y contraste
@@ -99,8 +118,7 @@ while True:
             with open("peliculas/registros.txt", "a") as f:
                 f.write(f"{datetime.now()},{emotion_dict[maxindex]}\n")
 
-    except KeyboardInterrupt:
-        break
+
 
 
 cap.release()
