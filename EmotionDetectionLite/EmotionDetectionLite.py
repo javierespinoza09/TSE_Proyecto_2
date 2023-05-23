@@ -41,7 +41,7 @@ tiempo_inicio = time.time()
 
 while True:
 
-    settings_path = "/home/javier/settings.txt"##Verificar path de archivo settings final
+    settings_path = "/usr/bin/settings.txt"##Verificar path de archivo settings final
 
     try:
         with open(settings_path, "r") as file:
