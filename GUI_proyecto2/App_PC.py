@@ -123,50 +123,93 @@ class SSHApplication:
             print("No se encontraron archivos TXT en la carpeta 'peliculas'")
 
     def plot_emotions(self,filename):
-    # Crea un diccionario para almacenar los datos de las emociones
-        emotions = defaultdict(list)
+    from matplotlib import pyplot as plt
+from collections import defaultdict
+import math
 
-        # Lee el archivo de texto
-        with open("hola/"+filename, "r") as file:
-            for line in file:
-                line = line.strip()  # Elimina los espacios en blanco al inicio y al final
-                if line:
-                    timestamp, emotion = line.split(",")  # Separa el timestamp y la emoción
-                    _, minutes, seconds_milliseconds = timestamp.split(" ")[1].split(":")
-                    seconds = seconds_milliseconds.split(".")[0]
-                    milliseconds = seconds_milliseconds.split(".")[1][:2]
-                    emotions[emotion].append((minutes, f"{seconds}.{milliseconds}"))
+# Crea un diccionario para almacenar los datos de las emociones
+emotions = defaultdict(list)
 
-        # Configura los colores para cada emoción
-        emotion_colors = {
-            "Angry": "red",
-            "Disgusted": "blue",
-            "Fearful": "orange",
-            "Happy": "green",
-            "Neutral": "yellow",
-            "Sad": "purple",
-            "Surprised": "pink"
-        }
+# Lee el archivo de texto
+with open("Pelicula1.txt", "r") as file:
+    for line in file:
+        line = line.strip()  # Elimina los espacios en blanco al inicio y al final
+        if line:
+            timestamp, emotion = line.split(",")  # Separa el timestamp y la emoción
+            _, minutes, seconds_milliseconds = timestamp.split(" ")[1].split(":")
+            seconds = seconds_milliseconds.split(".")[0]
+            milliseconds = seconds_milliseconds.split(".")[1][:2]
+            emotions[emotion].append((int(minutes), float(f"{seconds}.{milliseconds}"), timestamp))
 
-        # Ordena los valores del eje y (segundos y milisegundos)
-        for emotion, data in emotions.items():
-            minutes, seconds_milliseconds = zip(*data)
-            seconds_milliseconds = [float(sm) for sm in seconds_milliseconds]
-            sorted_indices = sorted(range(len(seconds_milliseconds)), key=lambda k: seconds_milliseconds[k])
-            minutes = [minutes[i] for i in sorted_indices]
-            seconds_milliseconds = [seconds_milliseconds[i] for i in sorted_indices]
+# Configura los colores para cada emoción
+emotion_colors = {
+    "Angry": "red",
+    "Disgusted": "blue",
+    "Fearful": "orange",
+    "Happy": "green",
+    "Neutral": "yellow",
+    "Sad": "purple",
+    "Surprised": "pink"
+}
 
-            # Grafica los datos de las emociones
-            plt.scatter(minutes, seconds_milliseconds, color=emotion_colors[emotion], label=emotion)
+# Obtén todos los timestamps de la lista de emociones
+timestamps = []
+for data in emotions.values():
+    timestamps.extend(data)
 
-        # Configura el marcado del eje y
-        plt.yticks(range(0, int(max(seconds_milliseconds))+1, 10))
+# Ordena los valores del eje y (segundos y milisegundos)
+timestamps.sort(key=lambda x: x[1])
 
-        plt.xlabel("Minutos")
-        plt.ylabel("Segundos.Milisegundos")
-        plt.title("Emociones en función del tiempo")
-        plt.legend()
-        plt.show()
+# Grafica los datos de las emociones
+scatter_points = []
+for emotion, data in emotions.items():
+    minutes, seconds_milliseconds, _ = zip(*data)
+    scatter = plt.scatter(minutes, seconds_milliseconds, color=emotion_colors[emotion], label=emotion)
+    scatter_points.append(scatter)
+
+# Configura el marcado del eje y
+max_milliseconds = math.ceil(max(seconds_milliseconds))
+plt.yticks(range(0, max_milliseconds + 1, 10))
+
+plt.xlabel("Minutos")
+plt.ylabel("Segundos.Milisegundos")
+plt.title("Emociones en función del tiempo")
+legend = plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+legend.set_title("Emociones", prop={"size": 10})  # Ajusta el tamaño de la leyenda
+
+annotations = []
+
+
+def on_click(event):
+    if event.button == 1:  # Solo se activa para clics izquierdos
+        if event.inaxes:  # Verifica si el clic está dentro de la gráfica
+            x, y = event.xdata, event.ydata
+            min_dist = float('inf')
+            closest_timestamp = None
+
+            for timestamp in timestamps:
+                min_val, sec_val, _ = timestamp
+                dist = math.sqrt((min_val - x) ** 2 + (sec_val - y) ** 2)
+                if dist < min_dist:
+                    min_dist = dist
+                    closest_timestamp = timestamp
+
+            min_value, sec_value, timestamp_str = closest_timestamp
+            text = f"{min_value}:{sec_value:.2f} ({timestamp_str})"
+            annotation = plt.annotate(text, (x, y), xytext=(5, 5), textcoords="offset points", fontsize=8, color="black",
+                                      ha='left', va='bottom')
+            annotations.append(annotation)
+            plt.gcf().canvas.draw()
+    elif event.button == 3:  # Se activa para clics derechos
+        for annotation in annotations:
+            annotation.remove()
+        annotations.clear()
+        plt.gcf().canvas.draw()
+
+
+plt.gcf().canvas.mpl_connect('button_press_event', on_click)
+plt.tight_layout()  # Ajustar márgenes y espacios
+plt.show()
 
         
 
