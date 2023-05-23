@@ -1,2 +1,0 @@
-Framerate: 30
-On/Off: Off

@@ -5,6 +5,7 @@ import os
 import stat
 from matplotlib import pyplot as plt
 from collections import defaultdict
+from datetime import datetime
 
 class SSHApplication:
     def __init__(self, root):
@@ -31,8 +32,8 @@ class SSHApplication:
         tk.Button(root, text="Connect", command=self.connect_ssh).grid(row=6, columnspan=2)
 
         # Variable para comando de la aplicación
-        self.application_command=tk.StringVar(value="python3 Desktop/stopwatch.py")
-    
+        self.date1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.application_command=tk.StringVar(value="cd /home/javier/EmotionDetectionLite && python3 EmotionDetectionLiteSettings2.py")
         # Ruta del folder remoto
         self.remote_folder_path = tk.StringVar()
         
@@ -97,7 +98,7 @@ class SSHApplication:
         sftp_client.close()
 
     def call_plot(self):
-        ruta_peliculas = "peliculas/"
+        ruta_peliculas = "hola/"
         archivos_txt = [archivo for archivo in os.listdir(ruta_peliculas) if archivo.endswith(".txt")]
 
         if archivos_txt:
@@ -126,7 +127,7 @@ class SSHApplication:
         emotions = defaultdict(list)
 
         # Lee el archivo de texto
-        with open("peliculas/"+filename, "r") as file:
+        with open("hola/"+filename, "r") as file:
             for line in file:
                 line = line.strip()  # Elimina los espacios en blanco al inicio y al final
                 if line:
@@ -178,7 +179,7 @@ class SSHApplication:
         nueva_ventana.title("Aplicación para detector de emociones")
 
         # Ruta del folder remoto
-        remote_folder_path_g = tk.StringVar(value="Desktop/Folderprueba")
+        remote_folder_path_g = tk.StringVar(value="/home/javier/EmotionDetectionLite/resultados")
         
         # Ruta del folder local
         local_folder_path_g = tk.StringVar()
@@ -202,19 +203,21 @@ class SSHApplication:
             
             # Application command
             application_command = self.application_command.get()  # Modify this if the script name or path is different
+        
             print(application_command)
             # Check if the application command is not blank
             if not application_command.strip():
                 messagebox.showerror("Error", "Application command is blank.")
                 return
             # Execute the command
+            self.ssh_client.exec_command(f'date -s "{self.date1}"')
             stdin, stdout, stderr = self.ssh_client.exec_command(application_command)
-
+            
             # Update the file
             update_file()
             
             # Transfer the file to the remote server
-            remote_path = f"Desktop/{os.path.basename(self.file_path)}"  # Update the remote directory path
+            remote_path = f"/home/javier/{os.path.basename(self.file_path)}"  # Update the remote directory path
             self.enviar_settings(self.file_path, remote_path, self.ssh_client)
             # Display the output in a messagebox
             messagebox.showinfo("Application excecuted","Aplicación ejecutada con éxito")
@@ -230,7 +233,7 @@ class SSHApplication:
             update_file()
             
             # Transfer the file to the remote server
-            remote_path = f"Desktop/{os.path.basename(self.file_path)}"  # Update the remote directory path
+            remote_path = f"/home/javier/{os.path.basename(self.file_path)}"  # Update the remote directory path
             self.enviar_settings(self.file_path, remote_path, self.ssh_client)
 
             messagebox.showinfo("Program Terminated", "The remote program has been terminated.")
@@ -264,7 +267,7 @@ class SSHApplication:
             update_file()
             
             # Transfer the file to the remote server
-            remote_path = f"Desktop/{os.path.basename(self.file_path)}"  # Update the remote directory path
+            remote_path = f"/home/javier/{os.path.basename(self.file_path)}"  # Update the remote directory path
             print("Archivo a enviar: ",self.file_path,"\n")
             print("Dirección a almacenar",remote_path,"\n")
             print("Objeto a enviar: ",self.ssh_client,"\n")
