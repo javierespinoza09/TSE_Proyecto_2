@@ -64,7 +64,7 @@ Si no se cuenta con alguna de ellas el programa no funcionará como debe.
 
 ## Modelo para detección de emociones
 
-El modelo utilizado para la detección de las emociones se encuentra en la caperta **EmotionDetectionLite**, es el archivo de _Python_ llamado _EmotionDetection.py_, esta aplicación es la que se agrega en la receta en la capa de _Yocto Project_, junto con todas sus dependencias.
+El modelo utilizado para la detección de las emociones se encuentra en la caperta **EmotionDetectionLite**, es el archivo de _Python_ llamado _EmotionDetectionLite.py_, esta aplicación es la que se agrega en la receta en la capa de _Yocto Project_, junto con todas sus dependencias.
 
 Esta aplicación ya está transformada para trabajar con _Tensorflow Lite_ para utilizarla en el sistema embebido.
 
