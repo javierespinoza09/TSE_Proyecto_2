@@ -16,7 +16,7 @@
 
 ## Interfáz Gráfica de Usuario (GUI)
 1) Esta interfáz se ubica en la carpeta GUI_proyecto2, el archivo llamado App_PC.py, este es un archivo que contiene código en Python, antes de ejecutar esta aplicación se debe contar con varias dependencias en la PC remota (Ordenador que controlará a la _Raspberry Pi_):
-      -tkinter   
+      \n-tkinter   
       -paramiko
       -stat
       -matplolib
