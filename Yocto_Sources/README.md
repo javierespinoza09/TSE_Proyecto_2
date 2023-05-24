@@ -22,7 +22,7 @@ bitbake-layers add-layer meta-raspberrypi
 ```
 To make sure that the layer is included you can look for the conf/bblayers.conf.
 
-NOTE: You must make sure, and this applies to all future layers you have to add, that the layer is compatible with the poky version you are using, in this case _langdale_, otherwise you won't be able to generate the OS image.
+**NOTE: You must make sure (and this applies to all future layers you might want to add) that the layer is compatible with the poky version you are using, in this case _langdale_, otherwise you won't be able to generate the OS image.**
 
 ## meta-openembedded Layer
 This layer is essential in most of the Yocto projects bacause it has lots of aplications and features those you might be interested in. To include this layer and the specific features for this project you must write the following commands:
